@@ -1,0 +1,4 @@
+#ifndef CORE_ALLOCATOR_H
+#define CORE_ALLOCATOR_H
+
+#endif // CORE_ALLOCATOR_H
