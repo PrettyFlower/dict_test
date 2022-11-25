@@ -35,7 +35,7 @@ static void iterate_test(iterate_ctx *ctx, dictionary_kvp *kvp)
     string *s = ctx->strings[ctx->idx];
     string *s2 = (string *)kvp->value;
     if (!core_string_equals(s, s2))
-        printf("Strings out of order at idx %d", ctx->idx);
+        printf("Strings out of order at idx %d\n", ctx->idx);
     ctx->idx++;
 }
 
@@ -77,6 +77,41 @@ static void run_pass()
     }
     clock_t lookup_compare_time = clock() - local_start;
     printf("lookup and compare: %ld\n", lookup_compare_time);
+
+    local_start = clock();
+    for (int i = 0; i < num_strings / 5; i++) {
+        int idx = gen_rand(&r) % num_strings;
+        string *s = strings[idx];
+        if (s == NULL)
+            continue;
+        string *s2 = core_dict_remove(dict, s);
+        if (!core_string_equals(s, s2))
+            printf("Whoops...\n");
+        strings[idx] = NULL;
+    }
+    clock_t removal_time = clock() - local_start;
+    printf("removal: %ld\n", removal_time);
+
+    local_start = clock();
+    arena_allocator *arena2 = core_arena_allocator_init(num_strings * 10);
+    string **new_strings = core_arena_allocator_alloc(arena2, sizeof(string *) * num_strings);
+    int str_count = 0;
+    for (int i = 0; i < num_strings; i++) {
+        string *s = strings[i];
+        if (s != NULL) {
+            new_strings[str_count] = s;
+            str_count++;
+        }
+    }
+    for (int i = str_count; i < num_strings; i++) {
+        string *s = rand_string(arena, &r);
+        new_strings[i] = s;
+        core_dict_add(dict, s, s);
+    }
+    memcpy(strings, new_strings, sizeof(string *) * num_strings);
+    core_arena_allocator_free(arena2);
+    clock_t compress_time = clock() - local_start;
+    printf("compress and add new: %ld\n", compress_time);
 
     local_start = clock();
     iterate_ctx iterate_ctx = {

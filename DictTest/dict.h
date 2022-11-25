@@ -23,6 +23,7 @@ typedef struct {
 	int num_buckets;
 	dictionary_kvp *first;
 	dictionary_kvp *last;
+	dictionary_kvp *removed_kvp;
 	uint32_t(*get_hash)(void *key);
 	int(*equals)(void *a, void *b);
 } dictionary;
@@ -32,6 +33,8 @@ dictionary *core_dict_init(arena_allocator *arena, int num_buckets, uint32_t(*ge
 void core_dict_add(dictionary *dict, void *key, void *value);
 
 void *core_dict_get(dictionary *dict, void *key);
+
+void *core_dict_remove(dictionary *dict, void *key);
 
 void core_dict_iterate(dictionary *dict, void *ctx, void(*callback)(void *ctx, dictionary_kvp *kvp));
 
