@@ -36,6 +36,12 @@ void core_dict_add(dictionary *dict, void *key, void *value)
 	kvp->hash = hash;
 	kvp->bucket_next = dict->buckets[bucket];
 	dict->buckets[bucket] = kvp;
+	if (dict->first == NULL)
+		dict->first = kvp;
+	if (dict->last != NULL)
+		dict->last->ordered_next = kvp;
+	kvp->ordered_prev = dict->last;
+	dict->last = kvp;
 	dict->length++;
 }
 
@@ -51,4 +57,13 @@ void *core_dict_get(dictionary *dict, void *key)
 		kvp = kvp->bucket_next;
 	}
 	return NULL;
+}
+
+void core_dict_iterate(dictionary *dict, void *ctx, void(*callback)(void *ctx, dictionary_kvp *kvp))
+{
+	dictionary_kvp *next = dict->first;
+	while (next) {
+		callback(ctx, next);
+		next = next->ordered_next;
+	}
 }

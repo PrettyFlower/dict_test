@@ -33,4 +33,6 @@ void core_dict_add(dictionary *dict, void *key, void *value);
 
 void *core_dict_get(dictionary *dict, void *key);
 
+void core_dict_iterate(dictionary *dict, void *ctx, void(*callback)(void *ctx, dictionary_kvp *kvp));
+
 #endif // CORE_DICTIONARY_H

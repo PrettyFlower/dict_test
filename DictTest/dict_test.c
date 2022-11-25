@@ -10,6 +10,12 @@
 #include <string.h>
 #include <time.h>
 
+typedef struct {
+    int num_strings;
+    string **strings;
+    int idx;
+} iterate_ctx;
+
 string *rand_string(arena_allocator *arena, mt_rand *r)
 {
     string *s = core_string_init(arena, 11);
@@ -22,6 +28,15 @@ string *rand_string(arena_allocator *arena, mt_rand *r)
     //printf("\n");
     //int slen = strlen(c);
     return s;
+}
+
+static void iterate_test(iterate_ctx *ctx, dictionary_kvp *kvp)
+{
+    string *s = ctx->strings[ctx->idx];
+    string *s2 = (string *)kvp->value;
+    if (!core_string_equals(s, s2))
+        printf("Strings out of order at idx %d", ctx->idx);
+    ctx->idx++;
 }
 
 static void run_pass()
@@ -61,8 +76,19 @@ static void run_pass()
         //printf("\n");
     }
     clock_t lookup_compare_time = clock() - local_start;
-    clock_t total_time = clock() - total_start;
     printf("lookup and compare: %ld\n", lookup_compare_time);
+
+    local_start = clock();
+    iterate_ctx iterate_ctx = {
+        .num_strings = num_strings,
+        .strings = strings,
+        .idx = 0,
+    };
+    core_dict_iterate(dict, &iterate_ctx, iterate_test);
+    clock_t iterate_time = clock() - local_start;
+    printf("iterate: %ld\n", iterate_time);
+
+    clock_t total_time = clock() - total_start;
     printf("total: %ld\n", total_time);
     core_arena_allocator_free(arena);
 }
