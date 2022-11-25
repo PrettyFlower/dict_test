@@ -4,15 +4,13 @@
 
 #include <stdio.h>
 
-dictionary *core_dict_init(arena_allocator *arena, int capacity, uint32_t(*get_hash)(void *key), int(*equals)(void *a, void *b))
+dictionary *core_dict_init(arena_allocator *arena, int num_buckets, uint32_t(*get_hash)(void *key), int(*equals)(void *a, void *b))
 {
 	dictionary *dict = core_arena_allocator_alloc(arena, sizeof(dictionary));
 	dict->allocator = arena;
 	dict->length = 0;
-	dict->kvps = core_arena_allocator_alloc(arena, sizeof(dictionary_kvp) * capacity);
-	dict->capacity = capacity;
-	dict->buckets = core_arena_allocator_alloc(arena, sizeof(dictionary_kvp *) * 108631);
-	dict->num_buckets = 108631;
+	dict->buckets = core_arena_allocator_alloc(arena, sizeof(dictionary_kvp *) * num_buckets);
+	dict->num_buckets = num_buckets;
 	dict->first = NULL;
 	dict->get_hash = get_hash;
 	dict->equals = equals;
@@ -32,7 +30,7 @@ void core_dict_add(dictionary *dict, void *key, void *value)
 		}
 		existing = existing->bucket_next;
 	}
-	dictionary_kvp *kvp = &dict->kvps[dict->length];
+	dictionary_kvp *kvp = core_arena_allocator_alloc(dict->allocator, sizeof(dictionary_kvp));
 	kvp->key = key;
 	kvp->value = value;
 	kvp->hash = hash;

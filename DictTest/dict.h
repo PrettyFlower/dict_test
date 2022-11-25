@@ -19,8 +19,6 @@ typedef struct dictionary_kvp {
 typedef struct {
 	arena_allocator *allocator;
 	int length;
-	dictionary_kvp *kvps;
-	int capacity;
 	dictionary_kvp **buckets;
 	int num_buckets;
 	dictionary_kvp *first;
@@ -29,11 +27,7 @@ typedef struct {
 	int(*equals)(void *a, void *b);
 } dictionary;
 
-clock_t get_elapsed1();
-
-clock_t get_elapsed2();
-
-dictionary *core_dict_init(arena_allocator *arena, int capacity, uint32_t(*get_hash)(void *key), int(*equals)(void *a, void *b));
+dictionary *core_dict_init(arena_allocator *arena, int num_buckets, uint32_t(*get_hash)(void *key), int(*equals)(void *a, void *b));
 
 void core_dict_add(dictionary *dict, void *key, void *value);
 
