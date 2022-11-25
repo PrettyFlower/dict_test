@@ -15,4 +15,4 @@ mt_rand seed_rand(uint32_t seed);
 uint32_t gen_rand(mt_rand *rand);
 double gen_rand_double(mt_rand *rand);
 
-#endif // CORE_ALLOCATOR_H
+#endif // CORE_MTWISTER_H
