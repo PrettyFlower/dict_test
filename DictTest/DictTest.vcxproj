@@ -144,6 +144,7 @@
     <ClCompile Include="csharp_random.c" />
     <ClCompile Include="dict.c" />
     <ClCompile Include="dict_test.c" />
+    <ClCompile Include="farmhash.c" />
     <ClCompile Include="mtwister.c" />
     <ClCompile Include="murmur_hash_3.c" />
     <ClCompile Include="string.c" />
@@ -153,6 +154,7 @@
     <ClInclude Include="arena_allocator.h" />
     <ClInclude Include="csharp_random.h" />
     <ClInclude Include="dict.h" />
+    <ClInclude Include="farmhash.h" />
     <ClInclude Include="mtwister.h" />
     <ClInclude Include="murmur_hash_3.h" />
     <ClInclude Include="string.h" />

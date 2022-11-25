@@ -24,9 +24,10 @@ string *rand_string(arena_allocator *arena, mt_rand *r)
     return s;
 }
 
-int main()
+static void run_pass()
 {
-    clock_t start = clock();
+    clock_t total_start = clock();
+    clock_t local_start = clock();
     int num_strings = 100000;
     mt_rand r = seed_rand(time(NULL));
     arena_allocator *arena = core_arena_allocator_init(num_strings * 100);
@@ -37,18 +38,18 @@ int main()
         string *s = rand_string(arena, &r);
         strings[i] = s;
     }
-    clock_t gen_time = clock() - start;
+    clock_t gen_time = clock() - local_start;
     printf("string generation: %ld\n", gen_time);
 
-    start = clock();
+    local_start = clock();
     for (int i = 0; i < num_strings; i++) {
         string *s = strings[i];
         core_dict_add(dict, s, s);
     }
-    clock_t add_time = clock() - start;
+    clock_t add_time = clock() - local_start;
     printf("dict add: %ld\n", add_time);
 
-    start = clock();
+    local_start = clock();
     for (int i = 0; i < num_strings; i++) {
         string *s = strings[i];
         string *s2 = core_dict_get(dict, s);
@@ -59,9 +60,18 @@ int main()
         //printf(s2->data);
         //printf("\n");
     }
-    clock_t lookup_compare_time = clock() - start;
+    clock_t lookup_compare_time = clock() - local_start;
+    clock_t total_time = clock() - total_start;
     printf("lookup and compare: %ld\n", lookup_compare_time);
-    //printf("lookup and compare time: %ld, dict time1: %d, dict time2: %d\n", lookup_compare_time, get_elapsed1(), get_elapsed2());
+    printf("total: %ld\n", total_time);
+    core_arena_allocator_free(arena);
+}
+
+int main()
+{
+    run_pass();
+    run_pass();
+
     char c;
     printf("Press any key to continue...\n");
 #ifdef __MINGW32__
@@ -69,6 +79,5 @@ int main()
 #else
     scanf_s("%c", &c, 1);
 #endif
-    core_arena_allocator_free(arena);
     return 0;
 }

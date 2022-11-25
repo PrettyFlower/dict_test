@@ -1,6 +1,7 @@
 #include "string.h"
 
-#include "murmur_hash_3.h"
+//#include "murmur_hash_3.h"
+#include "farmhash.h"
 
 string *core_string_init(arena_allocator *arena, int data_length)
 {
@@ -62,4 +63,5 @@ int core_string_equals(string *a, string *b)
 uint32_t core_string_hash(string *s)
 {
 	return murmur_hash_3_x86_32(s->data, s->length, 1);
+	//return farmhash(s->data, s->length);
 }
