@@ -174,6 +174,15 @@ int main()
         .NegativeOrder = 0
     };
     GetNumberFormat(NULL, NULL, "5000", &fmt, buffer, 50);
+    printf("%s\n", buffer);
+
+    time_t time_val;
+    time(&time_val);
+    struct tm time_info;
+    localtime_s(&time_info, &time_val);
+    memset(buffer, 0, 50);
+    strftime(buffer, 50, "%c", &time_info);
+    printf("%s\n", buffer);
 
     run_pass();
     run_pass();
