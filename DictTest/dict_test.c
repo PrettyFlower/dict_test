@@ -4,11 +4,14 @@
 #include "dict.h"
 #include "mtwister.h"
 #include "string.h"
+#include "utf8proc.h"
 
+#include <locale.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <Windows.h>
 
 typedef struct {
     int num_strings;
@@ -130,6 +133,48 @@ static void run_pass()
 
 int main()
 {
+    arena_allocator *arena = core_arena_allocator_init(1000);
+    /*string *s = core_string_init(arena, 10);
+    char *src = "💩";
+    int len = strlen(src);
+    utf8proc_int32_t pts[10];
+    utf8proc_size_t ret = utf8proc_decompose(src, len, pts, 10, 0);
+    wchar_t *mode = L"wb, ccs=UTF-8";
+    char *filename = "💩.txt";
+    wchar_t wide_filename[10];
+    memset(wide_filename, 0, sizeof(wchar_t) * 10);
+    int filename_len = strlen(filename);
+    int result = MultiByteToWideChar(CP_UTF8, 0, filename, filename_len, wide_filename, 10);
+    //char *filename = "test.txt";
+    FILE *f;
+    errno_t e = _wfopen_s(&f, wide_filename, mode);
+    fwrite(src, 1, len, f);
+    fclose(f);*/
+    
+    //utf32_to_utf16(pts[0], output);
+    
+
+    /*int32_t p_dest_len = 0;
+    UErrorCode err = U_ZERO_ERROR;
+    u_strFromUTF8Lenient(s->data, s->data_length, &p_dest_len, src, -1, &err);
+    int len = u_countChar32(s->data, -1);
+    UChar32 test;
+    U16_GET(s->data, 0, 1, len, test);*/
+
+    setlocale(LC_ALL, "");
+    const struct lconv *const currentlocale = localeconv();
+    char buffer[50];
+    //sprintf_s(buffer, 50, "%d", 5000);
+    NUMBERFMT fmt = {
+        .NumDigits = 0,
+        .LeadingZero = 0,
+        .Grouping = 3,
+        .lpDecimalSep = ".",
+        .lpThousandSep = ",",
+        .NegativeOrder = 0
+    };
+    GetNumberFormat(NULL, NULL, "5000", &fmt, buffer, 50);
+
     run_pass();
     run_pass();
 
