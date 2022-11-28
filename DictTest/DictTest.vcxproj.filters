@@ -24,9 +24,6 @@
     <ClCompile Include="string.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="arena_allocator.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="allocator.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -42,15 +39,18 @@
     <ClCompile Include="xxhash.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="prime_utils.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="allocation_block.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dict.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="string.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="arena_allocator.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="allocator.h">
@@ -66,6 +66,12 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="xxhash.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="prime_utils.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="allocation_block.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

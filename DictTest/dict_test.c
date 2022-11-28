@@ -2,6 +2,7 @@
 
 #include "dict.h"
 #include "mtwister.h"
+#include "prime_utils.h"
 #include "string.h"
 #include "utf8proc.h"
 
@@ -18,9 +19,9 @@ typedef struct {
     int idx;
 } iterate_ctx;
 
-string *rand_string(arena_allocator *arena, mt_rand *r)
+string *rand_string(allocator *alloc, mt_rand *r)
 {
-    string *s = core_string_init(arena, 11);
+    string *s = core_string_init(alloc, 11);
     for (int i = 0; i < 10; i++) {
         s->data[i] = (gen_rand(r) % 26) + 97;
     }
@@ -48,11 +49,11 @@ static void run_pass()
     clock_t local_start = clock();
     int num_strings = 100000;
     mt_rand r = seed_rand(time(NULL));
-    arena_allocator *arena = core_arena_allocator_init(num_strings * 100);
-    dictionary *dict = core_dict_init(arena, num_strings, core_dict_string_hash, core_dict_string_equals);
-    string **strings = core_arena_allocator_alloc(arena, sizeof(string *) * num_strings);
+    allocator *alloc = core_allocator_init(num_strings * 25);
+    dictionary *dict = core_dict_init(alloc, 0, core_dict_string_hash, core_dict_string_equals);
+    string **strings = core_allocator_alloc(alloc, sizeof(string *) * num_strings);
     for (int i = 0; i < num_strings; i++) {
-        string *s = rand_string(arena, &r);
+        string *s = rand_string(alloc, &r);
         strings[i] = s;
     }
     clock_t gen_time = clock() - local_start;
@@ -95,8 +96,8 @@ static void run_pass()
     printf("removal: %ld\n", removal_time);
 
     local_start = clock();
-    arena_allocator *arena2 = core_arena_allocator_init(num_strings * 10);
-    string **new_strings = core_arena_allocator_alloc(arena2, sizeof(string *) * num_strings);
+    allocator *alloc2 = core_allocator_init(num_strings * 10);
+    string **new_strings = core_allocator_alloc(alloc, sizeof(string *) * num_strings);
     int str_count = 0;
     for (int i = 0; i < num_strings; i++) {
         string *s = strings[i];
@@ -106,12 +107,12 @@ static void run_pass()
         }
     }
     for (int i = str_count; i < num_strings; i++) {
-        string *s = rand_string(arena, &r);
+        string *s = rand_string(alloc, &r);
         new_strings[i] = s;
         core_dict_add(dict, s, s);
     }
     memcpy(strings, new_strings, sizeof(string *) * num_strings);
-    core_arena_allocator_free(arena2);
+    core_allocator_free(alloc2);
     clock_t compress_time = clock() - local_start;
     printf("compress and add new: %ld\n", compress_time);
 
@@ -127,13 +128,13 @@ static void run_pass()
 
     clock_t total_time = clock() - total_start;
     printf("total: %ld\n", total_time);
-    core_arena_allocator_free(arena);
+    core_allocator_free(alloc);
 }
 
 int main()
 {
-    arena_allocator *arena = core_arena_allocator_init(1000);
-    /*string *s = core_string_init(arena, 10);
+    allocator *alloc = core_allocator_init(1000);
+    /*string *s = core_string_init(alloc, 10);
     char *src = "💩";
     int len = strlen(src);
     utf8proc_int32_t pts[10];

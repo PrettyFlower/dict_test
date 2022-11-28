@@ -2,12 +2,12 @@
 
 #include "xxhash.h"
 
-string *core_string_init(arena_allocator *arena, int data_length)
+string *core_string_init(allocator *alloc, int data_length)
 {
-	string *s = core_arena_allocator_alloc(arena, sizeof(string));
+	string *s = core_allocator_alloc(alloc, sizeof(string));
 	if (s == NULL)
 		return NULL;
-	s->data = core_arena_allocator_alloc(arena, data_length);
+	s->data = core_allocator_alloc(alloc, data_length);
 	if (s->data == NULL)
 		return NULL;
 	s->length = 0;
@@ -15,9 +15,9 @@ string *core_string_init(arena_allocator *arena, int data_length)
 	return s;
 }
 
-string *core_string_init_from_c_string(arena_allocator *arena, char *c, int max_length)
+string *core_string_init_from_c_string(allocator *alloc, char *c, int max_length)
 {
-	string *s = core_string_init(arena, max_length);
+	string *s = core_string_init(alloc, max_length);
 	core_string_copy_c_string(s, c, max_length);
 	return s;
 }

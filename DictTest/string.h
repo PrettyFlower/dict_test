@@ -1,7 +1,7 @@
 #ifndef CORE_STRING_H
 #define CORE_STRING_H
 
-#include "arena_allocator.h"
+#include "allocator.h"
 
 #include <stdint.h>
 
@@ -11,9 +11,9 @@ typedef struct {
 	int data_length;
 } string;
 
-string *core_string_init(arena_allocator *arena, int data_length);
+string *core_string_init(allocator *alloc, int data_length);
 
-string *core_string_init_from_c_string(arena_allocator *arena, char *c, int max_length);
+string *core_string_init_from_c_string(allocator *alloc, char *c, int max_length);
 
 void core_string_copy_c_string(string *s, char *c, int length);
 

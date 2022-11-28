@@ -1,7 +1,7 @@
 #ifndef CORE_DICTIONARY_H
 #define CORE_DICTIONARY_H
 
-#include "arena_allocator.h"
+#include "allocator.h"
 
 #include <stdint.h>
 #include <time.h>
@@ -17,7 +17,8 @@ typedef struct dictionary_kvp {
 } dictionary_kvp;
 
 typedef struct {
-	arena_allocator *allocator;
+	allocator *allocator;
+	int capacity;
 	int length;
 	dictionary_kvp **buckets;
 	int num_buckets;
@@ -28,7 +29,7 @@ typedef struct {
 	int(*equals)(void *a, void *b);
 } dictionary;
 
-dictionary *core_dict_init(arena_allocator *arena, int num_buckets, uint32_t(*get_hash)(void *key), int(*equals)(void *a, void *b));
+dictionary *core_dict_init(allocator *alloc, int num_buckets, uint32_t(*get_hash)(void *key), int(*equals)(void *a, void *b));
 
 void core_dict_add(dictionary *dict, void *key, void *value);
 

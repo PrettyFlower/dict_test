@@ -1,17 +1,49 @@
 #include "dict.h"
 
+#include "prime_utils.h"
 #include "string.h"
 
+#include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 
-dictionary *core_dict_init(arena_allocator *arena, int num_buckets, uint32_t(*get_hash)(void *key), int(*equals)(void *a, void *b))
+static int get_num_buckets(int capacity)
 {
-	dictionary *dict = core_arena_allocator_alloc(arena, sizeof(dictionary));
-	dict->allocator = arena;
+	if (capacity >= UINT32_MAX)
+		return UINT32_MAX;
+	int num_buckets = core_prime_utils_get_next_prime(capacity);
+	return num_buckets;
+}
+
+static void resize(dictionary *dict) {
+	uint32_t new_capacity = 2 * dict->capacity;
+	new_capacity = get_num_buckets(new_capacity);
+	if (new_capacity <= dict->capacity)
+		return;
+
+	dictionary_kvp **new_buckets = core_allocator_alloc(dict->allocator, sizeof(dictionary_kvp *) * new_capacity);
+
+	dictionary_kvp *next = dict->first;
+	while (next) {
+		int new_bucket = next->hash % new_capacity;
+		next->bucket_next = new_buckets[new_bucket];
+		new_buckets[new_bucket] = next;
+		next = next->ordered_next;
+	}
+
+	dict->buckets = new_buckets;
+	dict->capacity = new_capacity;
+	dict->num_buckets = new_capacity;
+}
+
+dictionary *core_dict_init(allocator *alloc, int initial_capacity, uint32_t(*get_hash)(void *key), int(*equals)(void *a, void *b))
+{
+	dictionary *dict = core_allocator_alloc(alloc, sizeof(dictionary));
+	dict->allocator = alloc;
+	dict->capacity = initial_capacity > 0 ? initial_capacity : 1;
 	dict->length = 0;
-	dict->buckets = core_arena_allocator_alloc(arena, sizeof(dictionary_kvp *) * num_buckets);
-	dict->num_buckets = num_buckets;
+	dict->num_buckets = get_num_buckets(initial_capacity);
+	dict->buckets = core_allocator_alloc(dict->allocator, sizeof(dictionary_kvp *) * dict->num_buckets);
 	dict->first = NULL;
 	dict->last = NULL;
 	dict->removed_kvp = NULL;
@@ -22,6 +54,9 @@ dictionary *core_dict_init(arena_allocator *arena, int num_buckets, uint32_t(*ge
 
 void core_dict_add(dictionary *dict, void *key, void *value)
 {
+	if(dict->length >= dict->capacity)
+		resize(dict);
+
 	// find the right hash bucket with the linked list of KVPs
 	uint32_t hash = dict->get_hash(key);
 	int bucket = hash % dict->num_buckets;
@@ -44,7 +79,7 @@ void core_dict_add(dictionary *dict, void *key, void *value)
 		kvp = dict->removed_kvp;
 		dict->removed_kvp = kvp->bucket_next;
 	} else {
-		kvp = core_arena_allocator_alloc(dict->allocator, sizeof(dictionary_kvp));
+		kvp = core_allocator_alloc(dict->allocator, sizeof(dictionary_kvp));
 	}
 	kvp->key = key;
 	kvp->value = value;
