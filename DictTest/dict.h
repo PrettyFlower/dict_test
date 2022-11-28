@@ -38,4 +38,8 @@ void *core_dict_remove(dictionary *dict, void *key);
 
 void core_dict_iterate(dictionary *dict, void *ctx, void(*callback)(void *ctx, dictionary_kvp *kvp));
 
+uint32_t core_dict_string_hash(void *key);
+
+int core_dict_string_equals(void *a, void *b);
+
 #endif // CORE_DICTIONARY_H

@@ -1,0 +1,3 @@
+clang -c arena_allocator.c dict.c dict_test.c mtwister.c string.c utf8proc.c utf8proc_data.c xxhash.c -O3
+
+clang arena_allocator.o dict.o dict_test.o mtwister.o string.o utf8proc.o utf8proc_data.o xxhash.o -o DictTest.exe

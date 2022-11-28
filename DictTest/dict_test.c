@@ -32,13 +32,14 @@ string *rand_string(arena_allocator *arena, mt_rand *r)
     return s;
 }
 
-static void iterate_test(iterate_ctx *ctx, dictionary_kvp *kvp)
+static void iterate_test(void *ctx, dictionary_kvp *kvp)
 {
-    string *s = ctx->strings[ctx->idx];
+    iterate_ctx *it_ctx = (iterate_ctx *)ctx;
+    string *s = it_ctx->strings[it_ctx->idx];
     string *s2 = (string *)kvp->value;
     if (!core_string_equals(s, s2))
-        printf("Strings out of order at idx %d\n", ctx->idx);
-    ctx->idx++;
+        printf("Strings out of order at idx %d\n", it_ctx->idx);
+    it_ctx->idx++;
 }
 
 static void run_pass()
@@ -48,7 +49,7 @@ static void run_pass()
     int num_strings = 100000;
     mt_rand r = seed_rand(time(NULL));
     arena_allocator *arena = core_arena_allocator_init(num_strings * 100);
-    dictionary *dict = core_dict_init(arena, num_strings, core_string_hash, core_string_equals);
+    dictionary *dict = core_dict_init(arena, num_strings, core_dict_string_hash, core_dict_string_equals);
     string **strings = core_arena_allocator_alloc(arena, sizeof(string *) * num_strings);
     for (int i = 0; i < num_strings; i++) {
         string *s = rand_string(arena, &r);

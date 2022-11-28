@@ -129,3 +129,16 @@ void core_dict_iterate(dictionary *dict, void *ctx, void(*callback)(void *ctx, d
 		next = next->ordered_next;
 	}
 }
+
+uint32_t core_dict_string_hash(void *key)
+{
+	string *s = (string *)key;
+	return core_string_hash(s);
+}
+
+int core_dict_string_equals(void *a, void *b)
+{
+	string *s1 = (string *)a;
+	string *s2 = (string *)b;
+	return core_string_equals(s1, s2);
+}
