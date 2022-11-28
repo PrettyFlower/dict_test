@@ -1,6 +1,5 @@
 #include "dict.h"
 
-#include"csharp_random.h"
 #include "dict.h"
 #include "mtwister.h"
 #include "string.h"
@@ -49,7 +48,6 @@ static void run_pass()
     int num_strings = 100000;
     mt_rand r = seed_rand(time(NULL));
     arena_allocator *arena = core_arena_allocator_init(num_strings * 100);
-    //csharp_random *r = core_csharp_random_init(arena, time(NULL));
     dictionary *dict = core_dict_init(arena, num_strings, core_string_hash, core_string_equals);
     string **strings = core_arena_allocator_alloc(arena, sizeof(string *) * num_strings);
     for (int i = 0; i < num_strings; i++) {
@@ -161,7 +159,7 @@ int main()
     UChar32 test;
     U16_GET(s->data, 0, 1, len, test);*/
 
-    setlocale(LC_ALL, "");
+    /*setlocale(LC_ALL, "");
     const struct lconv *const currentlocale = localeconv();
     char buffer[50];
     //sprintf_s(buffer, 50, "%d", 5000);
@@ -182,7 +180,7 @@ int main()
     localtime_s(&time_info, &time_val);
     memset(buffer, 0, 50);
     strftime(buffer, 50, "%c", &time_info);
-    printf("%s\n", buffer);
+    printf("%s\n", buffer);*/
 
     run_pass();
     run_pass();

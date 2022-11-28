@@ -2,4 +2,7 @@
 /.vs
 /x64
 /DictTest/x64
+/DictTest/Release
+/Release
 *.o
+/DictTest/DictTest.exe

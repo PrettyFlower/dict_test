@@ -51,6 +51,7 @@
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+    <EnableASAN>false</EnableASAN>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -145,26 +146,23 @@
   <ItemGroup>
     <ClCompile Include="allocator.c" />
     <ClCompile Include="arena_allocator.c" />
-    <ClCompile Include="csharp_random.c" />
     <ClCompile Include="dict.c" />
     <ClCompile Include="dict_test.c" />
-    <ClCompile Include="farmhash.c" />
     <ClCompile Include="mtwister.c" />
-    <ClCompile Include="murmur_hash_3.c" />
     <ClCompile Include="string.c" />
     <ClCompile Include="utf8proc.c" />
     <ClCompile Include="utf8proc_data.c" />
+    <ClCompile Include="xxhash.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="allocator.h" />
     <ClInclude Include="arena_allocator.h" />
-    <ClInclude Include="csharp_random.h" />
     <ClInclude Include="dict.h" />
-    <ClInclude Include="farmhash.h" />
     <ClInclude Include="mtwister.h" />
-    <ClInclude Include="murmur_hash_3.h" />
     <ClInclude Include="string.h" />
     <ClInclude Include="utf8proc.h" />
+    <ClInclude Include="xxh3.h" />
+    <ClInclude Include="xxhash.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

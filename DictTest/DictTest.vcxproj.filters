@@ -24,9 +24,6 @@
     <ClCompile Include="string.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="murmur_hash_3.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="arena_allocator.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -36,16 +33,13 @@
     <ClCompile Include="mtwister.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="csharp_random.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="farmhash.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="utf8proc.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="utf8proc_data.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="xxhash.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -54,9 +48,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="string.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="murmur_hash_3.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="arena_allocator.h">
@@ -68,13 +59,13 @@
     <ClInclude Include="mtwister.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="csharp_random.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="farmhash.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="utf8proc.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="xxh3.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="xxhash.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
