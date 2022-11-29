@@ -18,8 +18,8 @@ typedef struct dictionary_kvp {
 
 typedef struct {
 	allocator *allocator;
-	int capacity;
-	int length;
+	uint32_t capacity;
+	uint32_t length;
 	dictionary_kvp **buckets;
 	int num_buckets;
 	dictionary_kvp *first;
@@ -29,7 +29,7 @@ typedef struct {
 	int(*equals)(void *a, void *b);
 } dictionary;
 
-dictionary *core_dict_init(allocator *alloc, int num_buckets, uint32_t(*get_hash)(void *key), int(*equals)(void *a, void *b));
+dictionary *core_dict_init(allocator *alloc, uint32_t num_buckets, uint32_t(*get_hash)(void *key), int(*equals)(void *a, void *b));
 
 void core_dict_add(dictionary *dict, void *key, void *value);
 

@@ -36,7 +36,7 @@ static void resize(dictionary *dict) {
 	dict->num_buckets = new_capacity;
 }
 
-dictionary *core_dict_init(allocator *alloc, int initial_capacity, uint32_t(*get_hash)(void *key), int(*equals)(void *a, void *b))
+dictionary *core_dict_init(allocator *alloc, uint32_t initial_capacity, uint32_t(*get_hash)(void *key), int(*equals)(void *a, void *b))
 {
 	dictionary *dict = core_allocator_alloc(alloc, sizeof(dictionary));
 	dict->allocator = alloc;

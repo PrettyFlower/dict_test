@@ -17,6 +17,8 @@ alloc_block *core_alloc_block_init(int size)
 	if (size < alloc_block_size)
 		return NULL;
 	uint8_t *memory = (uint8_t *)malloc(size);
+	if (memory == NULL)
+		return NULL;
 	memset(memory, 0, size);
 	alloc_block *block = (alloc_block *)memory;
 	block->mem_start = memory;
