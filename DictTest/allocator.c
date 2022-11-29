@@ -2,10 +2,12 @@
 
 allocator *core_allocator_init(int size)
 {
-	if (size < sizeof(alloc_block) + sizeof(allocator))
+	int alloc_block_size = core_alloc_block_align_size(sizeof(alloc_block));
+	int allocator_size = core_alloc_block_align_size(sizeof(allocator));
+	if (size < alloc_block_size + allocator_size)
 		return NULL;
 	alloc_block *first = core_alloc_block_init(size);
-	allocator *alloc = core_alloc_block_alloc(first, sizeof(allocator));
+	allocator *alloc = core_alloc_block_alloc(first, allocator_size);
 	alloc->block_size = size;
 	alloc->first = first;
 	alloc->last = first;
@@ -15,17 +17,20 @@ allocator *core_allocator_init(int size)
 
 void *core_allocator_alloc(allocator *alloc, int size)
 {
-	if (size > alloc->block_size)
+	int aligned_size = core_alloc_block_align_size(size);
+	if (aligned_size > alloc->block_size)
 		return NULL;
 
-	if (alloc->last->allocated_bytes + size > alloc->last->length) {
+	void *mem = core_alloc_block_alloc(alloc->last, size);
+	if (mem == NULL) {
 		alloc_block *next = core_alloc_block_init(alloc->block_size);
 		alloc->last->next_block = next;
 		alloc->last = next;
 		alloc->num_blocks++;
+		mem = core_alloc_block_alloc(alloc->last, size);
 	}
 
-	return core_alloc_block_alloc(alloc->last, size);
+	return mem;
 }
 
 void core_allocator_free(allocator *alloc)

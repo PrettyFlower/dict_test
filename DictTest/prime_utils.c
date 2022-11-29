@@ -37,4 +37,6 @@ int core_prime_utils_get_next_prime(int min)
 		if (core_prime_utils_is_prime(i))
 			return i;
 	}
+
+	return INT32_MAX;
 }

@@ -6,11 +6,12 @@
 struct alloc_block;
 typedef struct alloc_block {
 	uint8_t *mem_start;
-	uint8_t *next_mem;
 	int allocated_bytes;
 	int length;
 	struct alloc_block *next_block;
 } alloc_block;
+
+int core_alloc_block_align_size(int size);
 
 alloc_block *core_alloc_block_init(int size);
 
