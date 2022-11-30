@@ -1,7 +1,6 @@
 #include "allocation_block.h"
 
 #include <stdlib.h>
-#include <string.h>
 
 int core_alloc_block_align_size(int size)
 {
@@ -16,10 +15,9 @@ alloc_block *core_alloc_block_init(int size)
 	int alloc_block_size = core_alloc_block_align_size(sizeof(alloc_block));
 	if (size < alloc_block_size)
 		return NULL;
-	uint8_t *memory = (uint8_t *)malloc(size);
+	uint8_t *memory = (uint8_t *)calloc(1, size);
 	if (memory == NULL)
 		return NULL;
-	memset(memory, 0, size);
 	alloc_block *block = (alloc_block *)memory;
 	block->mem_start = memory;
 	block->allocated_bytes = alloc_block_size;
