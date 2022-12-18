@@ -8,6 +8,7 @@ int core_alloc_block_align_size(int size)
 	int ptr_size = sizeof(void *);
 	int align_size = (size + ptr_size - 1) & -ptr_size;
 	return align_size;
+	//return size;
 }
 
 alloc_block *core_alloc_block_init(int size)
