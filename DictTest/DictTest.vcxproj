@@ -146,6 +146,8 @@
   <ItemGroup>
     <ClCompile Include="allocation_block.c" />
     <ClCompile Include="allocator.c" />
+    <ClCompile Include="allocator_pool.c" />
+    <ClCompile Include="buffer.c" />
     <ClCompile Include="dict.c" />
     <ClCompile Include="dict_test.c" />
     <ClCompile Include="mtwister.c" />
@@ -158,6 +160,8 @@
   <ItemGroup>
     <ClInclude Include="allocation_block.h" />
     <ClInclude Include="allocator.h" />
+    <ClInclude Include="allocator_pool.h" />
+    <ClInclude Include="buffer.h" />
     <ClInclude Include="dict.h" />
     <ClInclude Include="mtwister.h" />
     <ClInclude Include="prime_utils.h" />

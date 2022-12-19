@@ -1,6 +1,8 @@
 #include "allocator.h"
 
-allocator *core_allocator_init(int size)
+#include "allocator_pool.h"
+
+allocator *core_allocator_init(int id, int size)
 {
 	int alloc_block_size = core_alloc_block_align_size(sizeof(alloc_block));
 	int allocator_size = core_alloc_block_align_size(sizeof(allocator));
@@ -8,10 +10,12 @@ allocator *core_allocator_init(int size)
 		return NULL;
 	alloc_block *first = core_alloc_block_init(size);
 	allocator *alloc = core_alloc_block_alloc(first, allocator_size);
+	alloc->id = id;
 	alloc->block_size = size;
 	alloc->first = first;
 	alloc->last = first;
 	alloc->num_blocks = 1;
+	alloc->track = 1;
 	return alloc;
 }
 
@@ -30,10 +34,14 @@ void *core_allocator_alloc(allocator *alloc, int size)
 		mem = core_alloc_block_alloc(alloc->last, size);
 	}
 
+	int offset = alloc->last->allocated_bytes - size;
+	if (alloc->track) {
+		core_allocator_pool_add_ptr(mem, alloc->id, alloc->num_blocks, offset);
+	}
 	return mem;
 }
 
-void core_allocator_free(allocator *alloc)
+void core_allocator_free_all(allocator *alloc)
 {
 	alloc_block *block = alloc->first;
 	while (block) {

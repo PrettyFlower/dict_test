@@ -1,5 +1,6 @@
 #include "dict.h"
 
+#include "allocator_pool.h"
 #include "dict.h"
 #include "mtwister.h"
 #include "prime_utils.h"
@@ -49,7 +50,7 @@ static void run_pass()
     clock_t local_start = clock();
     int num_strings = 100000;
     mt_rand r = seed_rand(time(NULL));
-    allocator *alloc = core_allocator_init(num_strings * 25);
+    allocator *alloc = core_allocator_pool_create_allocator(num_strings * 25);
     dictionary *dict = core_dict_init(alloc, 0, core_dict_string_hash, core_dict_string_equals);
     string **strings = core_allocator_alloc(alloc, sizeof(string *) * num_strings);
     for (int i = 0; i < num_strings; i++) {
@@ -96,7 +97,7 @@ static void run_pass()
     printf("removal: %ld\n", removal_time);
 
     local_start = clock();
-    allocator *alloc2 = core_allocator_init(num_strings * 10);
+    allocator *alloc2 = core_allocator_pool_create_allocator(num_strings * 10);
     string **new_strings = core_allocator_alloc(alloc, sizeof(string *) * num_strings);
     int str_count = 0;
     for (int i = 0; i < num_strings; i++) {
@@ -112,7 +113,7 @@ static void run_pass()
         core_dict_add(dict, s, s);
     }
     memcpy(strings, new_strings, sizeof(string *) * num_strings);
-    core_allocator_free(alloc2);
+    core_allocator_free_all(alloc2);
     clock_t compress_time = clock() - local_start;
     printf("compress and add new: %ld\n", compress_time);
 
@@ -128,12 +129,13 @@ static void run_pass()
 
     clock_t total_time = clock() - total_start;
     printf("total: %ld\n", total_time);
-    core_allocator_free(alloc);
+    core_allocator_free_all(alloc);
 }
 
 int main()
 {
-    allocator *alloc = core_allocator_init(1000);
+    core_allocator_pool_init();
+    //allocator *alloc = core_allocator_pool_create_allocator(1000);
     /*string *s = core_string_init(alloc, 10);
     char *src = "💩";
     int len = strlen(src);
