@@ -1,6 +1,7 @@
 #include "dict.h"
 
 #include "allocator_pool.h"
+#include "buffer.h"
 #include "dict.h"
 #include "mtwister.h"
 #include "prime_utils.h"
@@ -52,6 +53,10 @@ static void run_pass()
     mt_rand r = seed_rand(time(NULL));
     allocator *alloc = core_allocator_pool_create_allocator(num_strings * 25);
     dictionary *dict = core_dict_init(alloc, 0, core_dict_string_hash, core_dict_string_equals);
+    buffer buf;
+    void *data = malloc(100000);
+    buffer_init(&buf, data, 1024);
+    buffer_write_ptr(&buf, dict);
     string **strings = core_allocator_alloc(alloc, sizeof(string *) * num_strings);
     for (int i = 0; i < num_strings; i++) {
         string *s = rand_string(alloc, &r);

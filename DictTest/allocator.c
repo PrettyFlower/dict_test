@@ -21,11 +21,12 @@ allocator *core_allocator_init(int id, int size)
 
 void *core_allocator_alloc(allocator *alloc, int size)
 {
+	size += 16;
 	int aligned_size = core_alloc_block_align_size(size);
 	if (aligned_size > alloc->block_size)
 		return NULL;
 
-	void *mem = core_alloc_block_alloc(alloc->last, size);
+	uint8_t *mem = core_alloc_block_alloc(alloc->last, size);
 	if (mem == NULL) {
 		alloc_block *next = core_alloc_block_init(alloc->block_size);
 		alloc->last->next_block = next;
@@ -34,11 +35,11 @@ void *core_allocator_alloc(allocator *alloc, int size)
 		mem = core_alloc_block_alloc(alloc->last, size);
 	}
 
-	int offset = alloc->last->allocated_bytes - size;
-	if (alloc->track) {
-		core_allocator_pool_add_ptr(mem, alloc->id, alloc->num_blocks, offset);
-	}
-	return mem;
+	mem[0] = alloc->id;
+	mem[4] = alloc->num_blocks;
+	mem[8] = alloc->last->allocated_bytes - size;
+	mem[12] = size - 16;
+	return mem + 16;
 }
 
 void core_allocator_free_all(allocator *alloc)

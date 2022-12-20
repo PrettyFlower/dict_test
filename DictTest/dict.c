@@ -1,5 +1,6 @@
 #include "dict.h"
 
+#include "buffer.h"
 #include "prime_utils.h"
 #include "string.h"
 
@@ -176,4 +177,9 @@ int core_dict_string_equals(void *a, void *b)
 	string *s1 = (string *)a;
 	string *s2 = (string *)b;
 	return core_string_equals(s1, s2);
+}
+
+void core_dict_save(dictionary *dict, buffer *buf)
+{
+
 }

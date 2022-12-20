@@ -89,6 +89,8 @@ void buffer_write_i32(buffer *buffer, int32_t value);
  */
 void buffer_write_raw(buffer *buffer, const void *value, int size);
 
+void buffer_write_ptr(buffer *buf, const uint8_t *ptr);
+
 /**
  * Reads an unsigned 8-bit integer
  * @param buffer Buffer

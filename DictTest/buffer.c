@@ -88,6 +88,18 @@ void buffer_write_raw(buffer *buf, const void *value, int size)
     }
 }
 
+void buffer_write_ptr(buffer *buf, const uint8_t *ptr)
+{
+    int alloc_id = *(ptr - 16);
+    buffer_write_i32(buf, alloc_id);
+    int block_num = *(ptr - 12);
+    buffer_write_i32(buf, block_num);
+    int offset = *(ptr - 8);
+    buffer_write_i32(buf, offset);
+    int size = *(ptr - 4);
+    buffer_write_i32(buf, size);
+}
+
 uint8_t buffer_read_u8(buffer *buf)
 {
     if (check_size(buf, 1)) {
