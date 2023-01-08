@@ -12,7 +12,7 @@ typedef struct {
 
 allocator *core_allocator_init(int size);
 
-void *core_allocator_alloc(allocator *alloc, int size);
+void *core_allocator_alloc(allocator *alloc, int size, int type);
 
 void core_allocator_free(allocator *alloc);
 

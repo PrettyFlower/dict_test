@@ -1,13 +1,14 @@
 #include "string.h"
 
+#include "object_types.h"
 #include "xxhash.h"
 
 string *core_string_init(allocator *alloc, int data_length)
 {
-	string *s = core_allocator_alloc(alloc, sizeof(string));
+	string *s = core_allocator_alloc(alloc, sizeof(string), TYPE_STRING);
 	if (s == NULL)
 		return NULL;
-	s->data = core_allocator_alloc(alloc, data_length);
+	s->data = core_allocator_alloc(alloc, data_length, TYPE_STRING_DATA);
 	if (s->data == NULL)
 		return NULL;
 	s->length = 0;

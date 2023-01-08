@@ -160,6 +160,7 @@
     <ClInclude Include="allocator.h" />
     <ClInclude Include="dict.h" />
     <ClInclude Include="mtwister.h" />
+    <ClInclude Include="object_types.h" />
     <ClInclude Include="prime_utils.h" />
     <ClInclude Include="string.h" />
     <ClInclude Include="utf8proc.h" />

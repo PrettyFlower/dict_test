@@ -1,5 +1,6 @@
 #include "dict.h"
 
+#include "object_types.h"
 #include "prime_utils.h"
 #include "string.h"
 
@@ -21,7 +22,7 @@ static void resize(dictionary *dict) {
 	if (new_capacity <= dict->capacity)
 		return;
 
-	dictionary_kvp **new_buckets = core_allocator_alloc(dict->allocator, sizeof(dictionary_kvp *) * new_capacity);
+	dictionary_kvp **new_buckets = core_allocator_alloc(dict->allocator, sizeof(dictionary_kvp *) * new_capacity, TYPE_DICTIONARY_BUCKETS);
 
 	dictionary_kvp *next = dict->first;
 	while (next) {
@@ -38,12 +39,12 @@ static void resize(dictionary *dict) {
 
 dictionary *core_dict_init(allocator *alloc, uint32_t initial_capacity, uint32_t(*get_hash)(void *key), int(*equals)(void *a, void *b))
 {
-	dictionary *dict = core_allocator_alloc(alloc, sizeof(dictionary));
+	dictionary *dict = core_allocator_alloc(alloc, sizeof(dictionary), TYPE_DICTIONARY);
 	dict->allocator = alloc;
 	dict->capacity = initial_capacity > 0 ? initial_capacity : 1;
 	dict->length = 0;
 	dict->num_buckets = get_num_buckets(initial_capacity);
-	dict->buckets = core_allocator_alloc(dict->allocator, sizeof(dictionary_kvp *) * dict->num_buckets);
+	dict->buckets = core_allocator_alloc(dict->allocator, sizeof(dictionary_kvp *) * dict->num_buckets, TYPE_DICTIONARY_BUCKETS);
 	dict->first = NULL;
 	dict->last = NULL;
 	dict->removed_kvp = NULL;
@@ -79,7 +80,7 @@ void core_dict_add(dictionary *dict, void *key, void *value)
 		kvp = dict->removed_kvp;
 		dict->removed_kvp = kvp->bucket_next;
 	} else {
-		kvp = core_allocator_alloc(dict->allocator, sizeof(dictionary_kvp));
+		kvp = core_allocator_alloc(dict->allocator, sizeof(dictionary_kvp), TYPE_DICTIONARY_KVP);
 	}
 	kvp->key = key;
 	kvp->value = value;

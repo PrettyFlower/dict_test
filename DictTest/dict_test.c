@@ -2,6 +2,7 @@
 
 #include "dict.h"
 #include "mtwister.h"
+#include "object_types.h"
 #include "prime_utils.h"
 #include "string.h"
 #include "utf8proc.h"
@@ -51,7 +52,7 @@ static void run_pass()
     mt_rand r = seed_rand(time(NULL));
     allocator *alloc = core_allocator_init(num_strings * 25);
     dictionary *dict = core_dict_init(alloc, 0, core_dict_string_hash, core_dict_string_equals);
-    string **strings = core_allocator_alloc(alloc, sizeof(string *) * num_strings);
+    string **strings = core_allocator_alloc(alloc, sizeof(string *) * num_strings, TYPE_PTR);
     for (int i = 0; i < num_strings; i++) {
         string *s = rand_string(alloc, &r);
         strings[i] = s;
@@ -97,7 +98,7 @@ static void run_pass()
 
     local_start = clock();
     allocator *alloc2 = core_allocator_init(num_strings * 10);
-    string **new_strings = core_allocator_alloc(alloc, sizeof(string *) * num_strings);
+    string **new_strings = core_allocator_alloc(alloc, sizeof(string *) * num_strings, TYPE_PTR);
     int str_count = 0;
     for (int i = 0; i < num_strings; i++) {
         string *s = strings[i];
