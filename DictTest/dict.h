@@ -4,7 +4,6 @@
 #include "allocator.h"
 
 #include <stdint.h>
-#include <time.h>
 
 struct dictionary_kvp;
 typedef struct dictionary_kvp {
@@ -20,6 +19,7 @@ typedef struct {
 	allocator *allocator;
 	uint32_t capacity;
 	uint32_t length;
+	uint32_t longest_chain;
 	dictionary_kvp **buckets;
 	int num_buckets;
 	dictionary_kvp *first;

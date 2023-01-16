@@ -1,6 +1,5 @@
 #include "dict.h"
-
-#include "dict.h"
+#include "rh_dict.h"
 #include "mtwister.h"
 #include "prime_utils.h"
 #include "string.h"
@@ -33,7 +32,7 @@ string *rand_string(allocator *alloc, mt_rand *r)
     return s;
 }
 
-static void iterate_test(void *ctx, dictionary_kvp *kvp)
+/*static void iterate_test(void *ctx, rh_dict_kvp *kvp)
 {
     iterate_ctx *it_ctx = (iterate_ctx *)ctx;
     string *s = it_ctx->strings[it_ctx->idx];
@@ -41,16 +40,16 @@ static void iterate_test(void *ctx, dictionary_kvp *kvp)
     if (!core_string_equals(s, s2))
         printf("Strings out of order at idx %d\n", it_ctx->idx);
     it_ctx->idx++;
-}
+}*/
 
 static void run_pass()
 {
     clock_t total_start = clock();
     clock_t local_start = clock();
-    int num_strings = 100000;
+    int num_strings = 10;
     mt_rand r = seed_rand(time(NULL));
-    allocator *alloc = core_allocator_init(num_strings * 25);
-    dictionary *dict = core_dict_init(alloc, 0, core_dict_string_hash, core_dict_string_equals);
+    allocator *alloc = core_allocator_init(6000000);
+    rh_dict *dict = core_rh_dict_init(alloc, num_strings, core_dict_string_hash, core_dict_string_equals);
     string **strings = core_allocator_alloc(alloc, sizeof(string *) * num_strings);
     for (int i = 0; i < num_strings; i++) {
         string *s = rand_string(alloc, &r);
@@ -62,15 +61,18 @@ static void run_pass()
     local_start = clock();
     for (int i = 0; i < num_strings; i++) {
         string *s = strings[i];
-        core_dict_add(dict, s, s);
+        core_rh_dict_add(dict, s, s);
     }
     clock_t add_time = clock() - local_start;
-    printf("dict add: %ld\n", add_time);
+    uint32_t free_spaces = core_rh_dict_free_spaces(dict);
+    printf("dict add: %ld, longest chain: %d, free spaces: %d\n", add_time, dict->max_psl, free_spaces);
 
     local_start = clock();
     for (int i = 0; i < num_strings; i++) {
         string *s = strings[i];
-        string *s2 = core_dict_get(dict, s);
+        string *s2 = core_rh_dict_get(dict, s);
+        if (s2 == NULL)
+            printf("Whoops\n");
         if (!core_string_equals(s, s2))
             printf("Whoops...\n");
         //printf(s->data);
@@ -81,13 +83,13 @@ static void run_pass()
     clock_t lookup_compare_time = clock() - local_start;
     printf("lookup and compare: %ld\n", lookup_compare_time);
 
-    local_start = clock();
+    /*local_start = clock();
     for (int i = 0; i < num_strings / 5; i++) {
         int idx = gen_rand(&r) % num_strings;
         string *s = strings[idx];
         if (s == NULL)
             continue;
-        string *s2 = core_dict_remove(dict, s);
+        string *s2 = core_rh_dict_remove(dict, s);
         if (!core_string_equals(s, s2))
             printf("Whoops...\n");
         strings[idx] = NULL;
@@ -109,22 +111,22 @@ static void run_pass()
     for (int i = str_count; i < num_strings; i++) {
         string *s = rand_string(alloc, &r);
         new_strings[i] = s;
-        core_dict_add(dict, s, s);
+        core_rh_dict_add(dict, s, s);
     }
     memcpy(strings, new_strings, sizeof(string *) * num_strings);
     core_allocator_free(alloc2);
     clock_t compress_time = clock() - local_start;
-    printf("compress and add new: %ld\n", compress_time);
+    printf("compress and add new: %ld, longest chain: %d\n", compress_time, dict->max_psl);*/
 
-    local_start = clock();
+    /*local_start = clock();
     iterate_ctx iterate_ctx = {
         .num_strings = num_strings,
         .strings = strings,
         .idx = 0,
     };
-    core_dict_iterate(dict, &iterate_ctx, iterate_test);
+    core_rh_dict_iterate(dict, &iterate_ctx, iterate_test);
     clock_t iterate_time = clock() - local_start;
-    printf("iterate: %ld\n", iterate_time);
+    printf("iterate: %ld\n", iterate_time);*/
 
     clock_t total_time = clock() - total_start;
     printf("total: %ld\n", total_time);

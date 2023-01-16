@@ -42,6 +42,7 @@ dictionary *core_dict_init(allocator *alloc, uint32_t initial_capacity, uint32_t
 	dict->allocator = alloc;
 	dict->capacity = initial_capacity > 0 ? initial_capacity : 1;
 	dict->length = 0;
+	dict->longest_chain = 0;
 	dict->num_buckets = get_num_buckets(initial_capacity);
 	dict->buckets = core_allocator_alloc(dict->allocator, sizeof(dictionary_kvp *) * dict->num_buckets);
 	dict->first = NULL;
@@ -62,7 +63,8 @@ void core_dict_add(dictionary *dict, void *key, void *value)
 	int bucket = hash % dict->num_buckets;
 	dictionary_kvp *existing = dict->buckets[bucket];
 
-	// find the end of the linked list
+	// find the end of the linked list. length starts at one to count the new element we are trying to insert
+	uint32_t linkedlist_length = 1;
 	while (existing) {
 		// we already have a matching key, so just update the value of the KVP and return
 		if (existing->hash == hash && dict->equals(existing->key, key)) {
@@ -70,6 +72,7 @@ void core_dict_add(dictionary *dict, void *key, void *value)
 			return;
 		}
 		existing = existing->bucket_next;
+		linkedlist_length++;
 	}
 
 	// get a new KVP to store the data
@@ -99,6 +102,8 @@ void core_dict_add(dictionary *dict, void *key, void *value)
 		dict->first = kvp;
 	dict->last = kvp;
 	dict->length++;
+	if (linkedlist_length > dict->longest_chain)
+		dict->longest_chain = linkedlist_length;
 }
 
 void *core_dict_get(dictionary *dict, void *key)
