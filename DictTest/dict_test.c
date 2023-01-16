@@ -46,7 +46,7 @@ static void run_pass()
 {
     clock_t total_start = clock();
     clock_t local_start = clock();
-    int num_strings = 10;
+    int num_strings = 100000;
     mt_rand r = seed_rand(time(NULL));
     allocator *alloc = core_allocator_init(6000000);
     rh_dict *dict = core_rh_dict_init(alloc, num_strings, core_dict_string_hash, core_dict_string_equals);
