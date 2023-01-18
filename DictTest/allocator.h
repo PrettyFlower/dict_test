@@ -4,13 +4,17 @@
 #include "allocation_block.h"
 
 typedef struct {
-	int block_size;
-	alloc_block *first;
-	alloc_block *last;
-	int num_blocks;
+	int small_block_size;
+	int allocated_on_large_block;
+	alloc_block *small_first;
+	alloc_block *small_last;
+	int num_small_blocks;
+	alloc_block *large_first;
+	alloc_block *large_last;
+	int num_large_blocks;
 } allocator;
 
-allocator *core_allocator_init(int size);
+allocator *core_allocator_init(int small_block_size);
 
 void *core_allocator_alloc(allocator *alloc, int size);
 

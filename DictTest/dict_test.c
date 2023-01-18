@@ -49,7 +49,7 @@ static void run_pass()
     clock_t local_start = clock();
     int num_strings = 100000;
     mt_rand r = seed_rand(time(NULL));
-    allocator *alloc = core_allocator_init(num_strings * 25);
+    allocator *alloc = core_allocator_init(num_strings);
     dictionary *dict = core_dict_init(alloc, 0, core_dict_string_hash, core_dict_string_equals);
     string **strings = core_allocator_alloc(alloc, sizeof(string *) * num_strings);
     for (int i = 0; i < num_strings; i++) {
@@ -96,7 +96,7 @@ static void run_pass()
     printf("removal: %ld\n", removal_time);
 
     local_start = clock();
-    allocator *alloc2 = core_allocator_init(num_strings * 10);
+    allocator *alloc2 = core_allocator_init(2048);
     string **new_strings = core_allocator_alloc(alloc, sizeof(string *) * num_strings);
     int str_count = 0;
     for (int i = 0; i < num_strings; i++) {
